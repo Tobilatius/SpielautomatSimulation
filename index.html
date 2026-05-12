@@ -122,6 +122,19 @@
       </div>
     </div>
 
+    <div class="probability-controls" style="margin: 20px 0; text-align: left; max-width: 500px; margin: 20px auto;">
+      <h3>Symbol-Wahrscheinlichkeiten einstellen (%):</h3>
+      <div style="display: grid; gap: 8px;">
+        <div>♣ Kreuz: <input type="number" id="prob-club" value="25" step="1" min="0" max="100" style="width: 80px; margin-left: 10px;"> %</div>
+        <div>♦ Karo: <input type="number" id="prob-diamond" value="25" step="1" min="0" max="100" style="width: 80px; margin-left: 10px;"> %</div>
+        <div>♥ Herz: <input type="number" id="prob-heart" value="25" step="1" min="0" max="100" style="width: 80px; margin-left: 10px;"> %</div>
+        <div>♠ Pik: <input type="number" id="prob-spade" value="25" step="1" min="0" max="100" style="width: 80px; margin-left: 10px;"> %</div>
+      </div>
+      <div style="margin-top: 10px; font-size: 14px; color: #666;">
+        Gesamt: <span id="total-prob">100</span>% (muss 100% ergeben)
+      </div>
+    </div>
+
     <div class="stats">
       <div class="card">
         <div>Gespielte Runden</div>
@@ -197,7 +210,18 @@
     });
 
     function zufall() {
-      return symbole[Math.floor(Math.random() * 4)];
+      const probClub = parseFloat(document.getElementById('prob-club').value) || 25;
+      const probDiamond = parseFloat(document.getElementById('prob-diamond').value) || 25;
+      const probHeart = parseFloat(document.getElementById('prob-heart').value) || 25;
+      const probSpade = parseFloat(document.getElementById('prob-spade').value) || 25;
+      
+      const total = probClub + probDiamond + probHeart + probSpade;
+      const random = Math.random() * total;
+      
+      if (random < probClub) return "♣";
+      else if (random < probClub + probDiamond) return "♦";
+      else if (random < probClub + probDiamond + probHeart) return "♥";
+      else return "♠";
     }
 
     function auszahlungBerechnen(a, b) {
@@ -289,6 +313,33 @@
 
       document.getElementById('log').prepend(row);
     }
+
+    // Update probability total display
+    function updateProbabilityTotal() {
+      const probClub = parseFloat(document.getElementById('prob-club').value) || 0;
+      const probDiamond = parseFloat(document.getElementById('prob-diamond').value) || 0;
+      const probHeart = parseFloat(document.getElementById('prob-heart').value) || 0;
+      const probSpade = parseFloat(document.getElementById('prob-spade').value) || 0;
+      
+      const total = probClub + probDiamond + probHeart + probSpade;
+      document.getElementById('total-prob').textContent = total.toFixed(1);
+      
+      // Color code the total
+      const totalElement = document.getElementById('total-prob');
+      if (Math.abs(total - 100) < 0.1) {
+        totalElement.style.color = 'green';
+      } else {
+        totalElement.style.color = 'red';
+      }
+    }
+
+    // Add event listeners to probability inputs
+    document.addEventListener('DOMContentLoaded', function() {
+      ['prob-club', 'prob-diamond', 'prob-heart', 'prob-spade'].forEach(id => {
+        document.getElementById(id).addEventListener('input', updateProbabilityTotal);
+      });
+      updateProbabilityTotal();
+    });
   </script>
 
 </body>
