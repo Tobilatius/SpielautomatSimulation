@@ -134,12 +134,7 @@
       </div>
 
       <div class="card">
-        <div>Kontostand</div>
-        <div class="value" id="konto">0,00 €</div>
-      </div>
-
-      <div class="card">
-        <div>Durchschnitt pro Spiel</div>
+        <div>Gewinn</div>
         <div class="value" id="mittel">0,00 €</div>
       </div>
     </div>
@@ -268,7 +263,7 @@
       runden++;
       konto += auszahlung;
 
-      const mittelwert = konto / runden;
+      const mittelwert = konto;
 
       document.getElementById('runden').textContent = runden;
       document.getElementById('auszahlung').textContent = auszahlung.toFixed(2).replace('.', ',') + ' €';
